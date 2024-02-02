@@ -1,0 +1,1 @@
+export const originalTitle = 'Jitsi Call Demo';
