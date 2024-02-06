@@ -4,6 +4,7 @@ import { border, color } from '../../const/color'
 import Popup from 'reactjs-popup'
 import PopupCreateNewGroup from './PopupCreateNewGroup'
 import AddIcon from '@mui/icons-material/Add';
+import AvatarGroup from './AvatarGroup'
 
 const GroupList = () => {
     const contact: any = useContext(contactContext)
@@ -23,7 +24,7 @@ const GroupList = () => {
                 {/* <ChangeCurrentUserPopup onClose={() => setPopupOpen(false)} /> */}
             </div>
         </Popup>
-        <div style={{ flex: 1, backgroundColor: 'red' }}>
+        <div style={{ flex: 1 }}>
             {[...listGroup]?.map((e) => {
                 return <div
                     onClick={() => {
@@ -32,6 +33,8 @@ const GroupList = () => {
                         setActiveSection(2)
                     }}
                     style={{
+                        display: 'flex',
+                        alignItems: 'center',
                         borderBottom: border.main,
                         textAlign: 'left',
                         padding: '10px',
@@ -40,7 +43,14 @@ const GroupList = () => {
                         color: currentTargetGroup?.groupId === e?.groupId ? (activeSection === 2 ? 'white' : 'black') : 'black',
                     }}
                     key={e?.groupId}
-                >{e?.groupName}</div>
+                >
+                    <div>
+                        <AvatarGroup groupName={e?.groupName} totalMember={e?.data?.length || 0} />
+                    </div>
+                    <div style={{paddingLeft: '10px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {e?.groupName}
+                    </div>
+                </div>
             })}
         </div>
     </div>

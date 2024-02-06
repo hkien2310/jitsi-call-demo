@@ -1,10 +1,11 @@
 import { JitsiMeeting } from '@jitsi/react-sdk';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { sendNotification } from '../helper/sendNotification';
 import { IPropsCallNotiResponseBody } from '../Notification';
+import { IContactData, contactContext } from '../App';
 
-interface IParams {
+export interface IParamsCall {
     id?: number
     name: string
     room: string
@@ -16,24 +17,25 @@ interface IParams {
 
 const Jitsi = () => {
     const location = useLocation();
-    const params = location?.state as IParams
+    const params = location?.state as IParamsCall
     const apiRef = useRef<any>();
     const [logItems, updateLog] = useState<string[]>([]);
-    const [showNew, toggleShowNew] = useState(false);
     const [knockingParticipants, updateKnockingParticipants] = useState<any[]>([]);
+    const context = useContext(contactContext)
+    const { currentUser }: { currentUser: IContactData } = context as any ?? {}
 
     useEffect(() => {
-        if(params?.target){
+        if (params?.target) {
             const body: IPropsCallNotiResponseBody = {
                 groupName: params.roomName,
                 room: params.room,
-                userSender: params.name,
+                userSender: currentUser,
             }
             params?.target?.forEach((e) => {
                 sendNotification(e, body);
             })
         }
-    }, [params.name, params.room, params.roomName, params?.target])
+    }, [params.name, params.room, params.roomName, params?.target, currentUser])
 
 
     const printEventOutput = (payload: any) => {

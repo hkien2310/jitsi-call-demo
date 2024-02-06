@@ -7,6 +7,7 @@ import AllList from '../contact/AllList'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import Popup from 'reactjs-popup'
+import ShowCallNotification from '../call/ShowCallNotification'
 
 const style = {
     button: {
@@ -21,7 +22,7 @@ const style = {
 const MainLayout = (props?: any) => {
     const { children } = props ?? {}
     const contact: any = useContext(contactContext)
-    const { currentUser, tab, setTab, setActiveSection, activeSection }: { currentUser: IContactData, tab: 0 | 1, setTab: any, setActiveSection: any, activeSection: 1 | 2 | 3 } = contact ?? {}
+    const { currentUser, tab, setTab, setActiveSection, activeSection, showCallNoti }: { showCallNoti: boolean, currentUser: IContactData, tab: 0 | 1, setTab: any, setActiveSection: any, activeSection: 1 | 2 | 3 } = contact ?? {}
     const navigate = useNavigate()
     const auth = getAuth()
     const [signOutPopup, setSignOutPopup] = useState(false)
@@ -68,6 +69,8 @@ const MainLayout = (props?: any) => {
     }, [auth, navigate]);
 
     return <Box style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <ShowCallNotification showNoti={showCallNoti} />
+
         <Box style={{ backgroundColor: color.background.main, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: '50px', borderBottom: border.main }}>
             <Box style={{ padding: '10px', textTransform: 'capitalize' }}>
                 Jitsi Demo Call
@@ -166,7 +169,7 @@ const MainLayout = (props?: any) => {
                 <Grid item xs={3} style={{ display: 'flex', flex: 1, borderRight: border.main }}>
                     <AllList />
                 </Grid>
-                <Grid item xs={6} style={{ height: window.innerHeight - 50 }}>
+                <Grid item xs={6} style={{ height: window.innerHeight - 51, overflow: 'hidden' }}>
                     {children}
                 </Grid>
             </Grid>
@@ -182,7 +185,6 @@ const MainLayout = (props?: any) => {
 //         <Grid item md={8} xs={12}>
 //             {children}
 //         </Grid>
-//     </Grid>
-//     <ShowCallNotification showNoti={showCallNoti} /> */}
+//     </Grid> */}
 
 export default MainLayout

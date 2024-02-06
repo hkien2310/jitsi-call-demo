@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 // import toast, { Toaster } from 'react-hot-toast';
-import { contactContext } from './App';
+import { IContactData, contactContext } from './App';
 import { onBackgroundMessageListener, onMessageListener, requestForToken } from './firebase';
 import { onMessage } from 'firebase/messaging';
 import { onBackgroundMessage } from 'firebase/messaging/sw';
@@ -9,7 +9,7 @@ import { originalTitle } from './const/const';
 
 export interface IPropsCallNotiResponseBody {
     // type: string,
-    userSender: string,
+    userSender: IContactData,
     groupName: string,
     room: string,
 }
@@ -22,7 +22,6 @@ export interface IPropsCallNotiResponse {
 const Notification = () => {
     const contact: any = useContext(contactContext)
     const { setDataCallNoti, setShowCallNotification }: any = contact ?? {}
-    const [isBackground, setIsBackground] = useState(false)
 
     requestForToken();
     onMessage(messaging, (payload) => {
@@ -32,7 +31,9 @@ const Notification = () => {
 
         // ...
         const { body, image } = notification ?? {}
+        console.log('body', body)
         const parseBody = JSON.parse(body || '')
+        // console.log('dddd')
         // Xử lý payload ở đây
         setShowCallNotification(true)
         setDataCallNoti(parseBody)

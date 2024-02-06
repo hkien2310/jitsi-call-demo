@@ -13,6 +13,9 @@ export const sendNotification = async (token: string, sendToAPIData: IPropsCallN
             body: sendToAPIData,
             image: "Sample text3"
         },
+        android: {
+            priority: 'hight',
+        },
         to: token
     };
 
