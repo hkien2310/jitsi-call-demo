@@ -1,13 +1,14 @@
-import { Box, Grid } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
-import { IContactData, contactContext } from '../../App'
-import { border, color } from '../../const/color'
-import LeftLayout from './leftLayout'
-import AllList from '../contact/AllList'
+import { Box, Button, Grid, Popover, Select, Typography } from '@mui/material'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Popup from 'reactjs-popup'
+import { IContactData, contactContext } from '../../App'
+import { border, color } from '../../const/color'
 import ShowCallNotification from '../call/ShowCallNotification'
+import AllList from '../contact/AllList'
+import { useTranslation } from 'react-i18next'
+import { changeLang } from '../../helper/lang'
 
 const style = {
     button: {
@@ -21,11 +22,24 @@ const style = {
 
 const MainLayout = (props?: any) => {
     const { children } = props ?? {}
+    const { t } = useTranslation()
     const contact: any = useContext(contactContext)
     const { currentUser, tab, setTab, setActiveSection, activeSection, showCallNoti }: { showCallNoti: boolean, currentUser: IContactData, tab: 0 | 1, setTab: any, setActiveSection: any, activeSection: 1 | 2 | 3 } = contact ?? {}
     const navigate = useNavigate()
     const auth = getAuth()
     const [signOutPopup, setSignOutPopup] = useState(false)
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const onSignOut = () => {
         signOut(auth).then(() => {
@@ -38,19 +52,6 @@ const MainLayout = (props?: any) => {
         });
 
     }
-
-    // useEffect(() => {
-    //     // console.log(user, 'useruser')
-    //     onAuthStateChanged(auth, (user) => {
-    //         // console.log('userssss', user)
-    //         if (!user) {
-    //             // Người dùng đã đăng nhập, gọi hàm cập nhật token FCM
-    //             // updateFCMToken(user);
-    //             navigate('/login')
-    //         }
-
-    //     });
-    // }, [auth, navigate])
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (authUser) => {
@@ -73,28 +74,48 @@ const MainLayout = (props?: any) => {
 
         <Box style={{ backgroundColor: color.background.main, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: '50px', borderBottom: border.main }}>
             <Box style={{ padding: '10px', textTransform: 'capitalize' }}>
-                Jitsi Demo Call
+                {t('shared:demo')}
             </Box>
-            <Popup open={signOutPopup} modal={true} onClose={() => setSignOutPopup(false)} overlayStyle={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
-                <div
-                    style={{
-                        padding: '20px',
-                        width: '20vw',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        backgroundColor: 'white',
-                        boxShadow: '1px 1px 15px #000000',
-                        borderRadius: '10px',
+
+            <Box style={{display: 'flex', flexDirection: 'row'}}>
+                <Button aria-describedby={id} onClick={handleClick}>
+                    {t('shared:changeLang')}
+                </Button>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
                     }}
-                    onClick={() => {
-                        onSignOut()
-                    }}>
-                    Đăng xuất
-                </div>
-            </Popup>
-            <Box style={{ padding: '10px', display: 'flex', flexDirection: 'row', alignItems: 'center' }} onClick={() => setSignOutPopup(true)}>
-                <img alt={'avatar'} src={currentUser?.avatar} style={{ width: '40px', height: '40px', borderRadius: 1000 }} />
-                {currentUser?.name}
+                >
+                    <Typography onClick={() => changeLang('vi')} sx={{ p: 2, ":hover": {backgroundColor: 'gray', color: 'white'} }}>{t('shared:vi')}</Typography>
+                    <Typography onClick={() => changeLang('en')} sx={{ p: 2, ":hover": {backgroundColor: 'gray', color: 'white'} }}>{t('shared:en')}</Typography>
+                    <Typography onClick={() => changeLang('jp')} sx={{ p: 2, ":hover": {backgroundColor: 'gray', color: 'white'} }}>{t('shared:jp')}</Typography>
+                </Popover>
+                <Popup open={signOutPopup} modal={true} onClose={() => setSignOutPopup(false)} overlayStyle={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
+                    <div
+                        style={{
+                            padding: '20px',
+                            width: '20vw',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            backgroundColor: 'white',
+                            boxShadow: '1px 1px 15px #000000',
+                            borderRadius: '10px',
+                        }}
+                        onClick={() => {
+                            onSignOut()
+                        }}>
+                        {t('shared:logout')}
+                    </div>
+                </Popup>
+                <Box style={{ padding: '10px', display: 'flex', flexDirection: 'row', alignItems: 'center' }} onClick={() => setSignOutPopup(true)}>
+                    <img alt={'avatar'} src={currentUser?.avatar} style={{ width: '40px', height: '40px', borderRadius: 1000 }} />
+                    {currentUser?.name}
+                </Box>
             </Box>
         </Box>
 
@@ -103,7 +124,7 @@ const MainLayout = (props?: any) => {
                 <Grid item xs={3} style={{ display: 'flex', flex: 1, borderRight: border.main, backgroundColor: color.leftViewColor }}>
                     <div style={{ padding: '10px', width: '100%' }}>
                         <div style={{ textAlign: 'left', textTransform: 'uppercase', fontWeight: 500, borderBottom: border.main, marginBottom: '10px', fontSize: '25px' }}>
-                            Danh sách
+                            {t('shared:list')}
                         </div>
                         <div>
                             <div
@@ -132,7 +153,7 @@ const MainLayout = (props?: any) => {
                                     setTab(0)
                                 }}
                             >
-                                Tin nhắn
+                                {t('shared:message')}
                             </div>
                             <div style={
                                 tab !== 1 ?
@@ -158,7 +179,7 @@ const MainLayout = (props?: any) => {
                                     setActiveSection(1)
                                     setTab(1)
                                 }}>
-                                Group
+                                {t('shared:group')}
                             </div>
                         </div>
                     </div>

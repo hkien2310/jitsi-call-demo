@@ -3,11 +3,13 @@ import { IContactData, IGroupData, contactContext } from "../../App"
 import { useNavigate } from "react-router-dom"
 import { border, color } from "../../const/color"
 import RenderDataContact from "../contact/renderDataContact"
+import { useTranslation } from "react-i18next"
 
 const GroupDetail = () => {
     const contact: any = useContext(contactContext)
     const { currentUser, currentTargetGroup, currentUserId }: { currentUser: IContactData, currentTargetGroup: IGroupData, currentUserId: string } = contact ?? {}
     const navigate = useNavigate()
+    const {t} = useTranslation()
 
 
     if (!currentTargetGroup) return null
@@ -43,13 +45,13 @@ const GroupDetail = () => {
                     }}
                 >
                     <span>
-                        Bắt đầu cuộc gọi
+                        {t('shared:startCall')}
                     </span>
                 </div>
             </div>
             <div style={{overflow: 'scroll', flexDirection: 'column'}}>
                 <div style={{ fontSize: '25px' }}>
-                    Thông tin thành viên
+                    {t('shared:listMember')}
                 </div>
                 <div style={{flex: 1}}>
                     {currentTargetGroup?.data?.map((e, index) => {

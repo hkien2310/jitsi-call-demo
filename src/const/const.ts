@@ -1,1 +1,2 @@
-export const originalTitle = 'Jitsi Call Demo';
+
+export const originalTitle = 'shared:demo';

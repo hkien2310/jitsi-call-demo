@@ -4,6 +4,7 @@ import { createDataCollections } from "../../helper/createDataCollections"
 import { collection, getDocs, query } from "firebase/firestore"
 import { db } from "../.."
 import { border, color } from "../../const/color"
+import { useTranslation } from "react-i18next"
 
 interface IProps {
     onClose: () => void
@@ -13,6 +14,7 @@ const PopupCreateNewGroup = (props: IProps) => {
     const contact: any = useContext(contactContext)
     const { listContact, setListGroup, currentUser, setIsLoadingApp }: { listContact: IContactData[], setListGroup: any, currentUser: IContactData, setIsLoadingApp: any } = contact ?? {}
     const [tempGroup, setTempGroup,] = useState<IContactData[]>([])
+    const {t} = useTranslation()
 
     const refetchDataGroup = async () => {
 
@@ -46,7 +48,7 @@ const PopupCreateNewGroup = (props: IProps) => {
     }
     return <div style={{ width: '50vw', padding: '20px', backgroundColor: 'white', boxShadow: '1px 2px 9px #808080', borderRadius: '10px' }}>
         <div style={{ textAlign: 'center', fontWeight: 600, fontSize: '25px', textTransform: 'uppercase' }}>
-            Chọn thành viên
+            {t('shared:chooseMember')}
         </div>
         {[...listContact]?.map((e) => {
             const isSelected = tempGroup?.some((el) => el?.id === e?.id)
@@ -86,7 +88,7 @@ const PopupCreateNewGroup = (props: IProps) => {
             }
             await createDataCollections('group', dataToCreate).finally(() => refetchDataGroup())
         }}>
-            Create
+            {t('shared:create')}
         </div>
     </div>
 }

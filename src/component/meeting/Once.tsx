@@ -6,11 +6,13 @@ import RenderDataContact from "../contact/renderDataContact"
 import { IParamsCall } from "../../screen/Jitsi"
 import { IPropsCallNotiResponseBody } from "../../Notification"
 import { sendNotification } from "../../helper/sendNotification"
+import { useTranslation } from "react-i18next"
 
 const OnceDetail = () => {
     const contact: any = useContext(contactContext)
     const { currentUser, currentTarget, currentUserId }: { currentUser: IContactData, currentTarget: IContactData, currentUserId: string } = contact ?? {}
     const navigate = useNavigate()
+    const {t} = useTranslation()
     if (!currentTarget) return null
     return <div style={{ height: '100%', width: '100%' }}>
         <div style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -42,7 +44,7 @@ const OnceDetail = () => {
                         state: data
                     })
                 }}>
-                Bắt đầu cuộc gọi
+                {t('shared:startCall')}
             </div>
         </div>
         <div>

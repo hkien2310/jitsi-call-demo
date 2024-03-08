@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { IContactData } from "../../App"
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
@@ -16,11 +17,11 @@ const style: any = {
 }
 const RenderDataContact = (props: IProps) => {
     const { data } = props ?? {}
-    console.log(data, 'datadata')
+    const {t} = useTranslation()
     return <>
         <div style={style.containerItemLine}>
             <div>
-                Email:
+                {t('shared:email')}:
             </div>
             <div>
                 {data?.email}
@@ -29,7 +30,7 @@ const RenderDataContact = (props: IProps) => {
 
         <div style={style.containerItemLine}>
             <div>
-                Avatar:
+            {t('shared:avatar')}:
             </div>
             <div>
                 {

@@ -1,16 +1,10 @@
-import React, { useContext, useState } from 'react'
-import { IContactData, contactContext } from '../../App'
-import { addDoc, collection } from 'firebase/firestore'
+import { useContext, useState } from 'react';
+import { IContactData, contactContext } from '../../App';
 // import { db } from '../..'
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
-import ContactList from '../contact/contactList';
-import { getAuth, signOut } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
-import PopupCreateNewGroup from '../contact/PopupCreateNewGroup';
-import { border, color } from '../../const/color';
-import { Box } from '@mui/material';
 import { Grid } from '@material-ui/core';
+import { Box } from '@mui/material';
+import 'reactjs-popup/dist/index.css';
+import { border, color } from '../../const/color';
 
 const style = {
     button: {
@@ -43,9 +37,9 @@ const LeftLayout = (props: any) => {
     //     });
 
     // }
-    return <Box style={{flex: 1}}>
+    return <Box style={{ flex: 1 }}>
         <Grid container>
-            <Grid item xs={5} style={{borderRight: border.main, height: '100%'}}>
+            <Grid item xs={5} style={{ borderRight: border.main, height: '100%' }}>
                 <div style={{ padding: '10px' }}>
                     <div>
                         <div style={tab === 0 ? style.button : { ...style.button, backgroundColor: color.secondary }} onClick={() => setTab(0)}>

@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { sendNotification } from '../helper/sendNotification';
 import { IPropsCallNotiResponseBody } from '../Notification';
 import { IContactData, contactContext } from '../App';
+import { currentLng } from '../i18n';
 
 export interface IParamsCall {
     id?: number
@@ -249,7 +250,7 @@ const Jitsi = () => {
                     displayName: params?.name,
                     email: params?.email
                 }}
-                lang='vi'
+                lang={currentLng}
                 onApiReady={externalApi => handleApiReady(externalApi)}
                 onReadyToClose={handleReadyToClose}
                 getIFrameRef={handleJitsiIFrameRef1}

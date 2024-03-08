@@ -1,17 +1,13 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, doc, getDocs, onSnapshot, query, serverTimestamp, updateDoc } from "firebase/firestore";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { collection, doc, getDocs, query, serverTimestamp, updateDoc } from "firebase/firestore";
+import { getMessaging, getToken } from "firebase/messaging";
 import { createContext, useEffect, useState } from 'react';
+import { db, vapikey } from ".";
 import './App.css';
+import NotificationL, { IPropsCallNotiResponse } from "./Notification";
+import { updateDocument } from "./helper/updateDocument";
 import RouterList from './navigation';
 import useGetUserEmail from './navigation/useGetUserEmail';
-import { db, vapikey } from ".";
-import NotificationL, { IPropsCallNotiResponse } from "./Notification";
-import ShowCallNotification from "./component/call/ShowCallNotification";
-import { onBackgroundMessage } from "firebase/messaging/sw";
-import { onBackgroundMessageListener } from "./firebase";
-import { getAllData } from "./helper/getAllDataOfCollections";
-import { updateDocument } from "./helper/updateDocument";
 import LoadingScreen from "./screen/Loading";
 const messaging = getMessaging();
 
@@ -51,10 +47,29 @@ function App() {
   const auth = getAuth();
   const { emailUser } = useGetUserEmail()
 
+  // const q = query(collection(db, "contact"));
+  // const unsubscribe = onSnapshot(q, (snapshot) => {
+  //   snapshot.docChanges().forEach((change) => {
+  //     if (change.type === "added") {
+  //       console.log("New city: ", change.doc.data());
+  //     }
+  //     if (change.type === "modified") {
+  //       console.log("Modified city: ", change.doc.data());
+  //     }
+  //     if (change.type === "removed") {
+  //       console.log("Removed city: ", change.doc.data());
+  //     }
+  //   });
+  // });
+
+  // unsubscribe()
+
   useEffect(() => {
     const fetchDataContact = async () => {
+      // onDocumentUpdated
       try {
         const q = query(collection(db, "contact"));
+
         const querySnapshot = await getDocs(q);
         let data: any[] = []
         let allUser: any[] = []
@@ -159,7 +174,7 @@ function App() {
             if (currentToken) {
               // Send the token to your server and update the UI if necessary
               // ...
-              console.log('currentToken', currentToken)
+              // console.log('currentToken', currentToken)
               updateDoc(docRef, {
                 timestamp: serverTimestamp(),
                 tokenNotifications: currentToken
@@ -190,7 +205,7 @@ function App() {
           if (currentToken) {
             // Send the token to your server and update the UI if necessary
             // ...
-            console.log('currentToken', currentToken)
+            // console.log('currentToken', currentToken)
             if (listGroup && listGroup?.length > 0) {
               listGroup?.forEach((e) => {
                 const user = e?.data?.find((el) => {

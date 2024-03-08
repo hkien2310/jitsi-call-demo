@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 // import toast, { Toaster } from 'react-hot-toast';
-import { IContactData, contactContext } from './App';
-import { onBackgroundMessageListener, onMessageListener, requestForToken } from './firebase';
 import { onMessage } from 'firebase/messaging';
-import { onBackgroundMessage } from 'firebase/messaging/sw';
 import { messaging } from '.';
+import { IContactData, contactContext } from './App';
 import { originalTitle } from './const/const';
+import { requestForToken } from './firebase';
+import { useTranslation } from 'react-i18next';
 
 export interface IPropsCallNotiResponseBody {
     // type: string,
@@ -22,6 +22,7 @@ export interface IPropsCallNotiResponse {
 const Notification = () => {
     const contact: any = useContext(contactContext)
     const { setDataCallNoti, setShowCallNotification }: any = contact ?? {}
+    const {t} = useTranslation()
 
     requestForToken();
     onMessage(messaging, (payload) => {
@@ -31,7 +32,7 @@ const Notification = () => {
 
         // ...
         const { body, image } = notification ?? {}
-        console.log('body', body)
+        // console.log('body', body)
         const parseBody = JSON.parse(body || '')
         // console.log('dddd')
         // Xử lý payload ở đây
@@ -56,39 +57,39 @@ const Notification = () => {
     // };
 
     const updateTitleWithNotification = () => {
-        document.title = '🔔 Bạn có thông báo mới! 🔔 ' + originalTitle;
+        document.title = `🔔 ${t('shared:newNoti')} 🔔 ' + ${t(originalTitle)}`;
     };
 
     const restoreOriginalTitle = () => {
-        document.title = originalTitle;
+        document.title = t(originalTitle);
     };
 
     useEffect(() => {
         const handleVisibilityChange = () => {
-          if (!document.hidden) {
-            // Nếu trang web có focus, khôi phục title về giá trị ban đầu
-            restoreOriginalTitle();
-          }
+            if (!document.hidden) {
+                // Nếu trang web có focus, khôi phục title về giá trị ban đầu
+                restoreOriginalTitle();
+            }
         };
-    
+
         // Đăng ký sự kiện visibilitychange
         document.addEventListener('visibilitychange', handleVisibilityChange);
-    
+
         // Đăng ký sự kiện focus và blur để kiểm tra khi tab được chọn hoặc mất focus
         window.addEventListener('focus', restoreOriginalTitle);
         // window.addEventListener('blur', updateTitleWithNotification);
-    
+
         // Gọi hàm updateTitleWithNotification khi có thông báo đến
         // updateTitleWithNotification();
-    
+
         // Cleanup effect
         return () => {
-          document.removeEventListener('visibilitychange', handleVisibilityChange);
-          window.removeEventListener('focus', restoreOriginalTitle);
-        //   window.removeEventListener('blur', updateTitleWithNotification);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('focus', restoreOriginalTitle);
+            //   window.removeEventListener('blur', updateTitleWithNotification);
         };
-      }, []);
-    
+    }, []);
+
 
 
     useEffect(() => {
